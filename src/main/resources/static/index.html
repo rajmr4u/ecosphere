@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecosphere Login</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .left-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: green;
+    }
+
+    .login-box {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .login-btn:hover {
+        background-color: darkgreen;
+    }
+
+    .forgot-password, .register {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .right-section {
+        flex: 1;
+        background: url('https://via.placeholder.com/600x800') no-repeat center center;
+        background-size: cover;
+    }
+</style>
+</head>
+<body>
+
+<div class="left-section">
+    <div class="logo">ECOSPHERE<br>AMPLIFYING IMPACT</div>
+    <div class="login-box">
+		<form action="/auth" method="get">
+        <h2>Existing Client Login</h2>
+        <input type="text" name="userid" placeholder="Username (hello@company.com)">
+        <input type="password" placeholder="Password">
+        <button  type="submit" class="login-btn">Login</button>
+        <div class="forgot-password">
+            <a href="#">Forgot password</a>
+        </div>
+        <hr>
+        <div class="register">
+            <a href="#">Register here</a> if you don't have an account
+        </div>
+		</form>
+    </div>
+</div>
+
+<div class="right-section"></div>
+
+</body>
+</html>
