@@ -27,21 +27,21 @@ public class OrgRestController {
 		this.orgrepository= orgrepository;
 	}
 
-	@GetMapping("/org1")
+	@GetMapping("/api/org1")
 	public List<Organization> getOrganizations() {
 		logger.debug("Org Details in getOrganizations1111  : ");
 		return  orgrepository.findAll() ;
 		
 	}
 	
-	@PostMapping("/org")
+	@PostMapping("/api/org")
 	public List<Organization> getOrganizations(@RequestBody Organization org) {
 		logger.debug("Org Details in getOrganizations  : "+org);
 		return (org == null) ? orgrepository.findAll() : orgrepository.findByOrgid(org.getOrgid());
 		
 	}
 	
-	@PostMapping("/addorg")
+	@PostMapping("/api/addorg")
 	public Organization createUser(@RequestBody Organization org) {
 		logger.debug("Org Details   : "+org);
 		if (org==null) {

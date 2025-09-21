@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ecosphere.esg.entity.User;
+import com.ecosphere.esg.exceptions.UserNotFoundException;
 import com.ecosphere.esg.repository.UserRepository;
 
 @Service
@@ -30,13 +31,13 @@ public class EcoUserDetailsService implements UserDetailsService {
 	    public UserDetails  loadUserByUsername(String username) throws UsernameNotFoundException {
 		   logger.debug("In EcoUserDetailService"+username);
 		   
-		   List<User> users = repo.findByUserid(username);
-		   if (users.isEmpty()) {
+		   User user = repo.findByUserid(username);
+		   if (user== null) {
 		        throw new UsernameNotFoundException("User not found: " + username);
 		    }
 
-		    User user = users.get(0); // take first match
-
+		    
+		    logger.debug("User Informaniton : "+user.getPassword());
 		    return org.springframework.security.core.userdetails.User.builder()
 		            .username(user.getUserid())
 		            .password(user.getPassword())
