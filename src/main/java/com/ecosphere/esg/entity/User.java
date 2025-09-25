@@ -23,6 +23,22 @@ public class User {
 	private Integer orgid;
 	@Column(nullable = false)
 	private String role;
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getContactnumber() {
+		return contactnumber;
+	}
+	public void setContactnumber(String contactnumber) {
+		this.contactnumber = contactnumber;
+	}
+	@Column(nullable = false)
+	private String address;
+	@Column(nullable = false)
+	private String contactnumber;
 	
 	
 	public User() {

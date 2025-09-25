@@ -4,17 +4,20 @@ package com.ecosphere.esg.controller.rest;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecosphere.esg.entity.User;
-import com.ecosphere.esg.exceptions.UserNotFoundException;
+import com.ecosphere.esg.exceptions.RecordNotFoundException;
 import com.ecosphere.esg.repository.UserRepository;
 
 
@@ -36,52 +39,79 @@ public class UserRestController {
 	}
 
 
-	@PostMapping("/api/users")
-	public List<User> getUsers(@RequestBody User user) {
-    	logger.debug("User Id ..." + user.getUserid());
-		return  repository.findAll();
+	@GetMapping("/api/getusers/{orgid}")
+	public List<User> getUsers(@PathVariable int orgid) {
+    	logger.debug("getUsers Orgid ..{} " + orgid);
+    	return Optional.ofNullable(repository.findByOrgid(orgid))
+    	        .orElseThrow(() -> new RecordNotFoundException("No users found for orgId: " + orgid));
+		
 	}
 	
 	@PostMapping("/api/auth")
-	public User getUser(@RequestBody User user) {
+	public User getUser(@RequestBody User user){
         
 		logger.debug("In Get User /api/auth..." + user.getUserid());
-		User us = null;
-		if(user!=null) {
-			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			logger.debug("In Get User /api/auth... Encripted Password" + user.getPassword());
-			//return repository.findByUseridAndPassword(user.getUserid(),user.getPassword());
-			us = repository.findByUseridAndPassword(user.getUserid(),user.getPassword());
+		User us = Optional.ofNullable(user)
+		        .map(u -> repository.findByUserid(u.getUserid()))
+		        .orElseThrow(() -> new RecordNotFoundException("Pass valid User Credentials"));
+
+		logger.debug("In Get User /api/auth... us  :- {}", us);
+
+		if (!authenticateUser(user.getPassword(), us.getPassword())) {
+		    throw new RecordNotFoundException("Pass valid User Credentials");
 		}
-		
-		else
-			throw new UserNotFoundException("Pass valid User Details ");	
-		
-		logger.debug("In Get User /api/auth... User Object before return" + user.getUserid() +"------" + user.getPassword() + "------" +user.getRole()+ "------" +user.getId());
 		return us;
 		
 	}
 	
 	
+	public boolean authenticateUser(String rawPassword, String storedEncodedPassword) {
+		logger.debug("In authenticateUser...   {}" + passwordEncoder.matches(rawPassword, storedEncodedPassword));
+        return passwordEncoder.matches(rawPassword, storedEncodedPassword);
+    }
+	
 	@PostMapping("/api/updatepassword")
 	public User updatePassword(@RequestBody User user) {
         
-		logger.debug("In updatePassword..." + user.getUserid());
-		if (user.getUserid()==null) {
-			throw new UserNotFoundException("Pass valid User Details ");
-		}
-		    User usr = repository.findByUserid(user.getUserid());
+		logger.debug("In /api/updatepassword... :- {} "+user);
+		
+		User usr = Optional.ofNullable(user)
+				.map(u -> repository.findByUserid(u.getUserid()))
+		        .orElseThrow(() -> new RecordNotFoundException("Pass valid User Credentials"));
+
 		    usr.setPassword(passwordEncoder.encode(user.getPassword()));
 			return repository.save(usr);
 		
 	}
 	
 	
+	@PostMapping("/api/updateuser")
+	public User updateUser(@RequestBody User user) {
+        
+		if (user == null || user.getUserid()==null) {
+			throw new RecordNotFoundException("Pass valid User Details ");
+		}
+
+
+		logger.debug("In /api/updateuser... {}", user.getUserid());
+		
+		User usr = Optional.ofNullable(repository.findByUserid(user.getUserid()))
+				   .map(existing -> {
+			            existing.setAddress(user.getAddress());
+			            existing.setRole(user.getRole());
+			            existing.setContactnumber(user.getContactnumber());
+			            return existing;
+			        })
+		        .orElseThrow(() -> new RecordNotFoundException("User not found with id: " + user.getUserid()));
+		  return repository.save(usr);
+		
+	}
+	
 	@PostMapping("/api/createuser")
 	public User createUser(@RequestBody User user) {
-		logger.debug("User Details   : "+user);
+		logger.debug("User Details   : {} "+user);
 		if (user==null) {
-			throw new UserNotFoundException("Pass valid User Details ");
+			throw new RecordNotFoundException("Pass valid User Details ");
 		}
 		    user.setPassword(passwordEncoder.encode(user.getPassword()));
 			return repository.save(user);

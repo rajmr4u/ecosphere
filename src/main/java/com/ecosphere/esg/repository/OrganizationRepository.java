@@ -6,5 +6,5 @@ import com.ecosphere.esg.entity.Organization;
 
 
 public interface OrganizationRepository extends JpaRepository<Organization, Integer> {
-	List<Organization> findByOrgid(int orgid);
+	Organization findByOrgid(int orgid);
 }

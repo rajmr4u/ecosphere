@@ -23,8 +23,56 @@ public class Organization {
 	private String billingtype;
 	@Column(nullable = true)
 	private String country;
+	@Column(nullable = true)
+	private String address;
+	@Column(nullable = true)
+	private String email;
+	@Column(nullable = true)
+	private String contactnumber;
+	@Column(nullable = true)
+	private String contactperson;
 	
 	
+	public String getAddress() {
+		return address;
+	}
+
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+	public String getContactnumber() {
+		return contactnumber;
+	}
+
+
+	public void setContactnumber(String contactnumber) {
+		this.contactnumber = contactnumber;
+	}
+
+
+	public String getContactperson() {
+		return contactperson;
+	}
+
+
+	public void setContactperson(String contactperson) {
+		this.contactperson = contactperson;
+	}
+
+
 	public Organization() {
 		super();
 		// TODO Auto-generated constructor stub

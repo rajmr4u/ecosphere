@@ -1,18 +1,15 @@
 package com.ecosphere.esg.service;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 //import com.ecosphere.esg.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ecosphere.esg.entity.User;
-import com.ecosphere.esg.exceptions.UserNotFoundException;
+import com.ecosphere.esg.exceptions.RecordNotFoundException;
 import com.ecosphere.esg.repository.UserRepository;
 
 @Service
@@ -28,12 +25,12 @@ public class EcoUserDetailsService implements UserDetailsService {
 	}
 	
 	   @Override
-	    public UserDetails  loadUserByUsername(String username) throws UsernameNotFoundException {
+	    public UserDetails  loadUserByUsername(String username) throws RecordNotFoundException {
 		   logger.debug("In EcoUserDetailService"+username);
 		   
 		   User user = repo.findByUserid(username);
 		   if (user== null) {
-		        throw new UsernameNotFoundException("User not found: " + username);
+		        throw new RecordNotFoundException("User not found: " + username);
 		    }
 
 		    
